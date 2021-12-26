@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { saveFavoriteInLocalStorage } from "../services/saveFavoriteInLocalStorage.js";
 import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
@@ -16,12 +17,18 @@ const FavoriteCity = (props) => {
     }
     return (
       <div>
-        <Container fixed sx={{ display: 'flex',justifyContent: 'center'}}>
-          <Card sx={{ maxWidth: 350}}>
+        <Container fixed sx={{ display: "flex", justifyContent: "center" }}>
+          <Card sx={{ maxWidth: 350 }}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {testArray.city.toUpperCase()}
               </Typography>
+              <CardMedia
+                component="img"
+                height="194"
+                src="C:\Users\dvirb\whether-application\src\img\Icons\1-s.png"
+                alt="Paella dish"
+              />
               <Typography variant="body2" color="text.secondary">
                 {testArray.Temperature.Metric.Value + "C"}
               </Typography>

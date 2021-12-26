@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import  {weatherService}  from '../services/weatherervice.js'
 import DailyForecasts from "./DailyForecasts.js";
 import { addItem } from '../redux/actions';
 import { connect } from 'react-redux';
 import { saveFavoriteInLocalStorage } from "../services/saveFavoriteInLocalStorage.js";
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Container from "@mui/material/Container";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     addToList: (item) => dispatch(addItem(item)),
@@ -11,11 +19,16 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 
 const GetCity=(props)=>{
-    // console.log('props ' + JSON.stringify(props))
     const inputRef = React.createRef()
     const [get5DaysWeather,setGet5DaysWeather] = useState([])
     const [saveSuccess,setSaveSuccess] = useState('')
+    const [isSave,setIsSave] = useState(false)
     
+    useEffect(()=>{
+        CityProps('tel aviv')
+        Forecasts('tel aviv')
+    },[])
+
     const updateQuery = () => {
     const inputText = inputRef.current.value
     CityProps(inputText)
@@ -27,7 +40,6 @@ const GetCity=(props)=>{
     const CityProps= async(new_city)=>{
          try{
             const CityByKey = await  weatherService.searchCityAutoComplete(new_city).then(jsonRes=>{
-                // console.log(jsonRes[0])
                 return jsonRes[0].Key
             }).then(key=>{
                 const res = weatherService.searchCityByKey(key)
@@ -42,9 +54,7 @@ const GetCity=(props)=>{
                 WeatherText:WeatherText,
                 WeatherIcon:WeatherIcon
             }
-            console.log('json before save '+JSON.stringify(cartItems))
             setSaveSuccess(JSON.stringify(cartItems))
-            // console.log(CityByKey)
             return CityByKey
             }
          catch(err)
@@ -57,7 +67,6 @@ const GetCity=(props)=>{
     const Forecasts = async(new_city)=>{
         try{
            const ForecastsRes = await  weatherService.searchCityAutoComplete(new_city).then(jsonRes=>{
-            //    console.log(jsonRes[0].Key)
                return jsonRes[0].Key
            }).then(key=>{
                const res = weatherService.Forecasts(key)
@@ -66,12 +75,9 @@ const GetCity=(props)=>{
 
            var arr = [];
             for (var i = 0; i < ForecastsRes.DailyForecasts.length; i++) {
-                // console.log('the day is '+ForecastsRes.DailyForecasts[i].Day)
                 arr.push({ Temperature: ForecastsRes.DailyForecasts[i].Temperature.Minimum.Value, Day: ForecastsRes.DailyForecasts[i].Date })
             }
             arr.sort(function(a,b){
-                // Turn your strings into dates, and then subtract them
-                // to get a value that is either negative, positive, or zero.
                 return b.Day - a.Day;
               });
         setGet5DaysWeather(arr)
@@ -85,24 +91,72 @@ const GetCity=(props)=>{
    
    const saveCity=()=>{
     console.log('json before save2 '+JSON.stringify(saveSuccess))
+        console.log(saveSuccess)
         props.addToList(saveSuccess);
         saveFavoriteInLocalStorage.saveCity(saveSuccess)
+        setIsSave(!isSave)
    }
 
    const removeCity=()=>{
         const city_to_remove = JSON.parse(saveSuccess)
         saveFavoriteInLocalStorage.removeCity(city_to_remove.key)
+        setIsSave(!isSave)
    }
 
-    return(
-        <div>
-       <input ref={inputRef}/>
-       <button  onClick={saveCity}>add to favorite</button>
-       <button  onClick={removeCity}>remove from favorite</button>
-      <button onClick={updateQuery}>search</button>
-      {get5DaysWeather.map((infoForEachDay, key) => <DailyForecasts daily={infoForEachDay} key={key} />)}
-    
-        </div>
-    )
+   const listItemsJSX = get5DaysWeather.map((infoForEachDay, key) => (
+    <DailyForecasts style={{display:"inline"}} daily={infoForEachDay} key={key} >,</DailyForecasts>));
+
+   const initial = {
+        key:212476,
+        city: "rishon leZiyyon",
+        Temperature: {
+            Imperial:{Unit: "F",UnitType: 18,Value: 52},
+            Metric:{Unit: "C",UnitType: 17,Value: 11}
+        },
+        WeatherText:"Mostly cloudy",
+        WeatherIcon:"7"
+    };
+   console.log('first render ' + saveSuccess) 
+   const currentCity = saveSuccess || JSON.stringify(initial)
+   const parseCurrentCity = JSON.parse(currentCity)
+    return (
+      <div>
+        <Container fixed sx={{ borderRadius:"50px 20px",border:"2px solid #d2c8c8", justifyContent: "center" }}>
+        <Container fixed sx={{ borderRadius:"50px 20px",border:"2px solid #d2c8c8", justifyContent: "center" }}>
+          <Card sx={{ borderRadius:"50px 20px",border:"2px solid #d2c8c8",marginBottom: "100px",alignItems: "center"}}>
+            <CardActions>
+              <input ref={inputRef} />
+              <Button style={{justifyContent: "center"}} onClick={updateQuery}>search</Button>
+            </CardActions>
+          </Card>
+
+          <Card sx={{ maxWidth: 350 ,marginBottom: "100px"}}>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {parseCurrentCity.city.toUpperCase()}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {parseCurrentCity.Temperature.Metric.Value + "C"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {parseCurrentCity.WeatherText}
+              </Typography>
+            </CardContent>
+            
+            <CardActions>
+              {isSave ? (
+                <Button style={{ marginLeft: "23%" }} endIcon={<FavoriteIcon />} onClick={removeCity} />
+              ) : (
+                <Button style={{ marginLeft: "23%" }} endIcon={<FavoriteBorderIcon />} onClick={saveCity} />
+              )}
+            </CardActions>
+          </Card>
+        </Container>
+        <Container fixed sx={{ display: "flex", flexDirection: "row" }}>
+        {listItemsJSX}
+        </Container>
+        </Container>
+      </div>
+    );
 }
 export default connect(null, mapDispatchToProps)(GetCity);
