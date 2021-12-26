@@ -8,10 +8,14 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
 import Typography from '@mui/material/Typography';
 import Container from "@mui/material/Container";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import img1 from '../img/Icons/1-s.png'
+import CardMedia from '@mui/material/CardMedia';
+
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     addToList: (item) => dispatch(addItem(item)),
@@ -121,40 +125,80 @@ const GetCity=(props)=>{
    const parseCurrentCity = JSON.parse(currentCity)
     return (
       <div>
-        <Container fixed sx={{ borderRadius:"50px 20px",border:"2px solid #d2c8c8", justifyContent: "center" }}>
-        <Container fixed sx={{ borderRadius:"50px 20px",border:"2px solid #d2c8c8", justifyContent: "center" }}>
-          <Card sx={{ borderRadius:"50px 20px",border:"2px solid #d2c8c8",marginBottom: "100px",alignItems: "center"}}>
-            <CardActions>
-              <input ref={inputRef} />
-              <Button style={{justifyContent: "center"}} onClick={updateQuery}>search</Button>
-            </CardActions>
-          </Card>
-
-          <Card sx={{ maxWidth: 350 ,marginBottom: "100px"}}>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {parseCurrentCity.city.toUpperCase()}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {parseCurrentCity.Temperature.Metric.Value + "C"}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {parseCurrentCity.WeatherText}
-              </Typography>
-            </CardContent>
-            
-            <CardActions>
-              {isSave ? (
-                <Button style={{ marginLeft: "23%" }} endIcon={<FavoriteIcon />} onClick={removeCity} />
-              ) : (
-                <Button style={{ marginLeft: "23%" }} endIcon={<FavoriteBorderIcon />} onClick={saveCity} />
-              )}
-            </CardActions>
-          </Card>
-        </Container>
-        <Container fixed sx={{ display: "flex", flexDirection: "row" }}>
-        {listItemsJSX}
-        </Container>
+        <Container
+          fixed
+          sx={{
+            borderRadius: "50px 20px",
+            border: "2px solid #d2c8c8",
+            justifyContent: "center",
+          }}
+        >
+          <Container
+            fixed
+            sx={{
+              borderRadius: "50px 20px",
+            //   border: "2px solid #d2c8c8",
+              justifyContent: "center",
+              marginTop:"3%"
+            }}
+          >
+            <Card
+              sx={{
+                borderRadius: "50px 40px",
+                // border: "2px solid #d2c8c8",
+                // marginTop: "10%",
+                // marginBottom: "10%",
+                alignItems: "center",
+              }}
+            >
+              <CardActions sx={{  marginLeft: "40%" }}>
+                <Input  ref={inputRef} placeholder="Enter a city..." />
+                <Button
+                  style={{ justifyContent: "center" }}
+                  onClick={updateQuery}
+                >
+                  search
+                </Button>
+              </CardActions>
+            </Card>
+              <Card sx={{ maxWidth: 350, marginLeft: "30%", marginTop:"6%" }}>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {parseCurrentCity.city.toUpperCase()}
+                  </Typography>
+                  <CardMedia
+                    component="img"
+                    height="190"
+                    src={img1}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    {parseCurrentCity.Temperature.Metric.Value + "C"}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {parseCurrentCity.WeatherText}
+                  </Typography>
+                </CardContent>
+              </Card>
+      
+            <CardActions sx={{ maxWidth: 350, marginLeft: "90%" }}>
+                {isSave ? (
+                  <Button
+                    style={{ marginLeft: "23%" }}
+                    endIcon={<FavoriteIcon />}
+                    onClick={removeCity}
+                  />
+                ) : (
+                  <Button
+                    style={{ marginLeft: "23%" }}
+                    endIcon={<FavoriteBorderIcon />}
+                    onClick={saveCity}
+                  />
+                )}
+              </CardActions>
+          </Container>
+          <Container fixed sx={{ display: "flex", flexDirection: "row" ,marginTop:"5%", marginBottom:"20px", marginLeft:"10%"}}>
+            {listItemsJSX}
+          </Container>
         </Container>
       </div>
     );
