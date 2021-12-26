@@ -152,7 +152,7 @@ const GetCity=(props)=>{
               }}
             >
               <CardActions sx={{  marginLeft: "40%" }}>
-                <Input  ref={inputRef} placeholder="Enter a city..." />
+                <input  ref={inputRef} placeholder="Enter a city..." />
                 <Button
                   style={{ justifyContent: "center" }}
                   onClick={updateQuery}
@@ -166,7 +166,7 @@ const GetCity=(props)=>{
                   <Typography gutterBottom variant="h5" component="div">
                     {parseCurrentCity.city.toUpperCase()}
                   </Typography>
-                  <CardMedia
+                  <img
                     component="img"
                     height="190"
                     src={img1}

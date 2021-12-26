@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Container from "@mui/material/Container";
 
 const DailyForecasts = (props) => {
-    console.log(props)
+    // console.log(props)
 
     const day = new Date(props.daily.Day)
     const dayInWord =  executeDayByDate(day.getDay())
