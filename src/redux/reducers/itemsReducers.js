@@ -1,5 +1,5 @@
-import { ADD_ITEM, RESET_LIST, REMOVE_ITEM , CHANGE_MODE} from '../actions';
-function manageList(state = { items: [], isDark:true }, action) {
+import { ADD_ITEM, RESET_LIST, REMOVE_ITEM , CHANGE_MODE, CHANGE_TYPE} from '../actions';
+function manageList(state = { items: [], isDark:true ,CelsiusOrFahrenheit: true }, action) {
   // console.log('The action type', action.type);
   console.log('The state', state);
   // console.log(typeof state);
@@ -18,6 +18,16 @@ function manageList(state = { items: [], isDark:true }, action) {
       ...state,
       isDark: !lastMood
       }
+
+      case CHANGE_TYPE:
+      const lastType = state.CelsiusOrFahrenheit
+        return {
+        // ...state,
+        CelsiusOrFahrenheit: !lastType
+        }
+    
+      
+      
     case RESET_LIST:
       return { ...state, items: [] };
       case REMOVE_ITEM:

@@ -10,7 +10,7 @@ import rootReducer from './redux/reducers';
 const enhancers = compose(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
-const store = createStore(rootReducer, { items: [] , isDark:false }, enhancers);
+const store = createStore(rootReducer, { items: [] , isDark:false , CelsiusOrFahrenheit: false}, enhancers);
 ReactDOM.render(
   <Provider store={store}>
     <App />

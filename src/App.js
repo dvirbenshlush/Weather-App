@@ -26,9 +26,7 @@ function App() {
   }, [DarkMode])
 
 
-  const dispatch = useDispatch();
 
-  const [isDark, setIsDark] = useState(false);
 
   return (
     <div className="App">

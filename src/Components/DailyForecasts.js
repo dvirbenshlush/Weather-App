@@ -7,9 +7,10 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Container from "@mui/material/Container";
+import CardMedia from '@mui/material/CardMedia';
 
 const DailyForecasts = (props) => {
-    // console.log(props)
+    // console.log('props of DailyForecasts' + JSON.stringify(props.daily))
 
     const day = new Date(props.daily.Day)
     const dayInWord =  executeDayByDate(day.getDay())
@@ -23,6 +24,14 @@ const DailyForecasts = (props) => {
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {props.daily.Temperature + " C"}
+              </Typography>
+              <CardMedia
+                    component="img"
+                    height="60"
+                    src={`assets/images/icons/${props.daily.Icon}-s.png`}
+                  />
+              <Typography variant="body3" color="text.secondary">
+                {props.daily.IconPhrase }
               </Typography>
             </CardContent>
             <CardActions>

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import  {weatherService}  from '../services/weatherervice.js'
 import DailyForecasts from "./DailyForecasts.js";
-import { addItem } from '../redux/actions';
+// import { addItem } from '../redux/actions';
 import { connect } from 'react-redux';
 import { saveFavoriteInLocalStorage } from "../services/saveFavoriteInLocalStorage.js";
 import Card from '@mui/material/Card';
@@ -13,24 +13,34 @@ import Typography from '@mui/material/Typography';
 import Container from "@mui/material/Container";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import img1 from '../img/Icons/1-s.png'
 import CardMedia from '@mui/material/CardMedia';
+import { changeType } from '../redux/actions';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+// import {getStore} from 'redux' 
 
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addToList: (item) => dispatch(addItem(item)),
+    changeType: (WhetherType) => dispatch(changeType(WhetherType)),
   });
 
-
+  let currentCity = "[]";
 const GetCity=(props)=>{
     const inputRef = React.createRef()
     const [get5DaysWeather,setGet5DaysWeather] = useState([])
     const [saveSuccess,setSaveSuccess] = useState('')
     const [isSave,setIsSave] = useState(false)
-    
+    const [WhetherType, setWhetherType] = useState(false);
+    function clickHandler(e) {
+      props.changeType(WhetherType);
+      console.log('WhetherType ' + WhetherType)
+    }
     useEffect(()=>{
+        // debugger
         CityProps('tel aviv')
         Forecasts('tel aviv')
+        // currentCity = saveSuccess || JSON.stringify(initial)
     },[])
 
     const updateQuery = () => {
@@ -38,8 +48,7 @@ const GetCity=(props)=>{
     CityProps(inputText)
     Forecasts(inputText)
     }
- 
- 
+
 
     const CityProps= async(new_city)=>{
          try{
@@ -50,7 +59,7 @@ const GetCity=(props)=>{
                 return res
             })
             const {Temperature,WeatherText,WeatherIcon,MobileLink} = CityByKey[0]
-            const cartItems = 
+            let cartItems = 
             {
                 key:MobileLink.split('?')[0].split('/')[6], //excute the key of the city
                 city: MobileLink.split('?')[0].split('/')[5], //excute the name of the city,
@@ -58,6 +67,9 @@ const GetCity=(props)=>{
                 WeatherText:WeatherText,
                 WeatherIcon:WeatherIcon
             }
+            
+            // cartItems = undefined
+            currentCity = JSON.stringify(cartItems) || JSON.stringify(initial)
             setSaveSuccess(JSON.stringify(cartItems))
             return CityByKey
             }
@@ -76,14 +88,20 @@ const GetCity=(props)=>{
                const res = weatherService.Forecasts(key)
                return res
            })
+           console.log(ForecastsRes.DailyForecasts)
 
            var arr = [];
             for (var i = 0; i < ForecastsRes.DailyForecasts.length; i++) {
-                arr.push({ Temperature: ForecastsRes.DailyForecasts[i].Temperature.Minimum.Value, Day: ForecastsRes.DailyForecasts[i].Date })
+                arr.push({ Temperature: ForecastsRes.DailyForecasts[i].Temperature.Minimum.Value,
+                     Day: ForecastsRes.DailyForecasts[i].Date,
+                     Icon: ForecastsRes.DailyForecasts[i].Day.Icon,
+                     IconPhrase: ForecastsRes.DailyForecasts[i].Day.IconPhrase
+                     })
             }
             arr.sort(function(a,b){
                 return b.Day - a.Day;
               });
+              console.log('arr ' + JSON.stringify(arr))
         setGet5DaysWeather(arr)
            return ForecastsRes.DailyForecasts
            }
@@ -120,10 +138,11 @@ const GetCity=(props)=>{
         WeatherText:"Mostly cloudy",
         WeatherIcon:"7"
     };
-   console.log('first render ' + saveSuccess) 
-   const currentCity = saveSuccess || JSON.stringify(initial)
+
+//    console.log('first render ' + saveSuccess) 
+
    const parseCurrentCity = JSON.parse(currentCity)
-    return (
+       return (
       <div>
         <Container
           fixed
@@ -161,25 +180,36 @@ const GetCity=(props)=>{
                 </Button>
               </CardActions>
             </Card>
-              <Card sx={{ maxWidth: 350, marginLeft: "30%", marginTop:"6%" }}>
+            {parseCurrentCity.city ? <Container>
+              <Card className={"text-dan"} sx={{ maxWidth: 350, marginLeft: "30%", marginTop:"6%" }}>
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {parseCurrentCity.city.toUpperCase()}
                   </Typography>
-                  <img
+                  <CardMedia
                     component="img"
                     height="190"
-                    src={img1}
+                    src={`assets/images/icons/${parseCurrentCity.WeatherIcon}-s.png`}
                   />
+                  {
+                  WhetherType ? <Container>
                   <Typography variant="body2" color="text.secondary">
-                    {parseCurrentCity.Temperature.Metric.Value + "C"}
+                    {parseCurrentCity.Temperature.Imperial.Value + parseCurrentCity.Temperature.Imperial.Unit}
                   </Typography>
+                  </Container>
+                  :
+                  <Container>
+                  <Typography variant="body2" color="text.secondary">
+                    {parseCurrentCity.Temperature.Metric.Value + parseCurrentCity.Temperature.Metric.Unit}
+                  </Typography>
+                  </Container>
+                  }
                   <Typography variant="body2" color="text.secondary">
                     {parseCurrentCity.WeatherText}
                   </Typography>
                 </CardContent>
               </Card>
-      
+                
             <CardActions sx={{ maxWidth: 350, marginLeft: "90%" }}>
                 {isSave ? (
                   <Button
@@ -195,6 +225,16 @@ const GetCity=(props)=>{
                   />
                 )}
               </CardActions>
+              </Container> : "טוען"
+           }
+                 <FormGroup>
+          <FormControlLabel
+            onClick={clickHandler}
+            control={<Switch  />}
+            label="Whether Type"
+          />
+        </FormGroup>
+
           </Container>
           <Container fixed sx={{ display: "flex", flexDirection: "row" ,marginTop:"5%", marginBottom:"20px", marginLeft:"10%"}}>
             {listItemsJSX}

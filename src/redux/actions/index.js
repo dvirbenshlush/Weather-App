@@ -6,6 +6,8 @@ export const REMOVE_ITEM = 'REMOVE_ITEM';
 
 export const CHANGE_MODE = 'CHANGE_MODE';
 
+export const CHANGE_TYPE = 'CHANGE_TYPE';
+
 /*
  * action creators
  */
@@ -24,4 +26,8 @@ export function resetList() {
 
 export const changeMode = (isDark)=>{
     return { type: CHANGE_MODE, payload: isDark };
+}
+
+export const changeType = (CelsiusOrFahrenheit)=>{
+  return { type: CHANGE_TYPE, payload: CelsiusOrFahrenheit };
 }

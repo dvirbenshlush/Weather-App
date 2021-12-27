@@ -26,7 +26,7 @@ const FavoriteCity = (props) => {
               <CardMedia
                 component="img"
                 height="194"
-                src="C:\Users\dvirb\whether-application\src\img\Icons\1-s.png"
+                src={`assets/images/icons/${testArray.WeatherIcon}-s.png`}
                 alt="Paella dish"
               />
               <Typography variant="body2" color="text.secondary">
