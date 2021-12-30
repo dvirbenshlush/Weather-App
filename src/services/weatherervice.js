@@ -36,7 +36,6 @@ async function Forecasts(cityKey) {
     } catch (err) {
         const msg = (err.message);
         Promise.reject(msg)
-
     }
 }
 
