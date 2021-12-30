@@ -19,10 +19,10 @@ store.subscribe(() => {
 
 
 function App() {
-  const DarkMode = useSelector(state => state.isDark)
+  const DarkMode = useSelector(state => state)
 
   useEffect(() => {
-    console.log('redux result is ' + DarkMode)
+    console.log('redux result is ' + JSON.stringify(DarkMode))
   }, [DarkMode])
 
 

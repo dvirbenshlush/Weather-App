@@ -4,7 +4,8 @@ import config from "../asset/config.js";
 export const weatherService = {
     searchCityByKey,
     searchCityAutoComplete,
-    Forecasts
+    Forecasts,
+    converCtoVorVtoC
 }
 
 async function searchCityByKey(cityKey) {
@@ -40,3 +41,12 @@ async function Forecasts(cityKey) {
 }
 
 
+ function converCtoVorVtoC(num,mood) {
+    try {
+        return mood ? parseInt(num) * 1.8 + 32 +' F' : parseInt(num) +' C'
+    } catch (err) {
+        const msg = (err.message);
+        Promise.reject(msg)
+
+    }
+}

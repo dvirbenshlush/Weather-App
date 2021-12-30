@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import  {weatherService}  from '../services/weatherervice.js'
 import DailyForecasts from "./DailyForecasts.js";
 // import { addItem } from '../redux/actions';
-import { connect } from 'react-redux';
-import { saveFavoriteInLocalStorage } from "../services/saveFavoriteInLocalStorage.js";
+import { useSelector,connect } from 'react-redux';
+import {  saveFavoriteInLocalStorage } from "../services/saveFavoriteInLocalStorage.js";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -18,15 +18,21 @@ import { changeType } from '../redux/actions';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
-// import {getStore} from 'redux' 
+ 
+// import { useSelector, useDispatch } from 'react-redux';
+
 
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     changeType: (WhetherType) => dispatch(changeType(WhetherType)),
   });
+  
 
   let currentCity = "[]";
 const GetCity=(props)=>{
+    const DarkMode = useSelector(state => state)
+    const dark = DarkMode.items.CelsiusOrFahrenheit
+    console.log('redux result is ' + JSON.stringify(dark))
     const inputRef = React.createRef()
     const [get5DaysWeather,setGet5DaysWeather] = useState([])
     const [saveSuccess,setSaveSuccess] = useState('')
@@ -191,8 +197,8 @@ const GetCity=(props)=>{
                     height="190"
                     src={`assets/images/icons/${parseCurrentCity.WeatherIcon}-s.png`}
                   />
-                  {
-                  WhetherType ? <Container>
+                  {/* {
+                  DarkMode.items.CelsiusOrFahrenheit ? <Container>
                   <Typography variant="body2" color="text.secondary">
                     {parseCurrentCity.Temperature.Imperial.Value + parseCurrentCity.Temperature.Imperial.Unit}
                   </Typography>
@@ -203,7 +209,12 @@ const GetCity=(props)=>{
                     {parseCurrentCity.Temperature.Metric.Value + parseCurrentCity.Temperature.Metric.Unit}
                   </Typography>
                   </Container>
-                  }
+                  } */}
+                         <Container>
+                  <Typography variant="body2" color="text.secondary">
+                    {weatherService.converCtoVorVtoC(parseCurrentCity.Temperature.Metric.Value, DarkMode.items.CelsiusOrFahrenheit)}
+                  </Typography>
+                  </Container>
                   <Typography variant="body2" color="text.secondary">
                     {parseCurrentCity.WeatherText}
                   </Typography>
